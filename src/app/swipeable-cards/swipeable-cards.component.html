@@ -1,0 +1,12 @@
+<GestureRootView>
+  <Image
+    *ngFor="let card of cards; let i = index"
+    stretch="aspectFill"
+    height="500"
+    width="90%"
+    class="rounded-lg mt-20"
+    src="{{ card.img }}"
+    (tap)="cardTapped(card, i)"
+  >
+  </Image>
+</GestureRootView>
