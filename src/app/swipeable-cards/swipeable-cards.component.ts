@@ -32,6 +32,8 @@ export class SwipeableCardsComponent implements OnInit {
   manager = NSManager.getInstance();
 
   private getGestureHandler = () => {
+    console.log('Get gesture handler');
+
     const gestureHandler = this.manager.createGestureHandler(
       NSHandlerType.PAN,
       10,
@@ -52,11 +54,15 @@ export class SwipeableCardsComponent implements OnInit {
   };
 
   private onGestureTouch(args: NSGestureTouchEventData) {
+    console.log('On Gesture Touch');
     const { state, extraData, view } = args.data;
+    console.log(extraData);
+    console.log(view);
     if (view) {
       view.translateX = extraData.translationX;
       view.translateY =
-        extraData.translationY + this.getTranslateY(this.currentView$.value);
+        extraData.translationY +
+        this.getTranslateY(this.currentView$.getValue());
       view.rotate = extraData.translationX * (isIOS ? 0.05 : 0.1);
     }
   }
@@ -80,12 +86,14 @@ export class SwipeableCardsComponent implements OnInit {
   private isFirstCard = (index: number) =>
     index === this.cards$.value.length - 1;
   private hasMoreCards = () => this.currentView$.value >= 0;
-  private like = () =>
+  like = () =>
     this.outCard(this.cards$.value[this.currentView$.value], Direction.Right);
-  private discard = () =>
+  discard = () =>
     this.outCard(this.cards$.value[this.currentView$.value], Direction.Left);
 
   private outCard(card: ItemCard, direction: Direction) {
+    console.log('Out card');
+
     if (this.hasMoreCards()) {
       card.view.animate({
         rotate: direction === Direction.Left ? -40 : 40,
@@ -108,6 +116,8 @@ export class SwipeableCardsComponent implements OnInit {
   }
 
   private applyTranslateY() {
+    console.log('Apply translate Y');
+
     for (let index = 0; index < this.currentView$.value + 1; index++) {
       const card = this.cards$.value[index];
       if (index <= this.currentView$.value) {
@@ -127,6 +137,8 @@ export class SwipeableCardsComponent implements OnInit {
   }
 
   private resetCard(card: ItemCard, indexView: number) {
+    console.log('Reset card');
+
     card.view.animate({
       rotate: 0,
       translate: {
@@ -143,6 +155,8 @@ export class SwipeableCardsComponent implements OnInit {
   }
 
   private onGestureState(args: NSGestureStateEventData) {
+    console.log('On Gesture state');
+
     const { state, prevState, extraData, view } = args.data;
     if (state === GestureState.END) {
       const card = this.cards$[this.currentView$.value];
@@ -155,6 +169,18 @@ export class SwipeableCardsComponent implements OnInit {
         this.resetCard(card, this.currentView$.value);
       }
     }
+  }
+
+  resetAllCard() {
+    console.log('Reset all cards');
+
+    this.currentView$.next(this.cards$.value.length - 1);
+    this.cards$.value.forEach((card: ItemCard, index) => {
+      this.resetCard(card, index);
+      if (this.isFirstCard(index)) {
+        this.getGestureHandler().attachToView(card.view);
+      }
+    });
   }
 
   loadedCard(args: { object: View }, index: number) {

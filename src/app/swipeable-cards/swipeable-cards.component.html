@@ -1,14 +1,40 @@
-<GestureRootView>
-  <Image
-    *ngFor="let card of cards$ | async; let i = index"
-    stretch="aspectFill"
-    height="500"
-    width="90%"
-    class="rounded-lg mt-20"
-    src="{{ card.img }}"
-    (tap)="cardTapped(card, i)"
-    (loaded)="loadedCard($event, i)"
-  >
-    <!--    translateY="getTranslateY(i)" -->
-  </Image>
-</GestureRootView>
+<GridLayout rows="*">
+  <GestureRootView>
+    <Image
+      *ngFor="let card of cards$ | async; let i = index"
+      stretch="aspectFill"
+      height="500"
+      width="90%"
+      class="rounded-lg mt-20"
+      src="{{ card.img }}"
+      (tap)="cardTapped(card, i)"
+      (loaded)="loadedCard($event, i)"
+    >
+      <!--    translateY="getTranslateY(i)" -->
+    </Image>
+  </GestureRootView>
+
+  <FlexboxLayout row="1" class="justify-around items-center">
+    <Button
+      (tap)="discard()"
+      class="h-[80] w-[80]"
+      icon="close"
+      backgroundColor="red"
+    >
+    </Button>
+    <Button
+      (tap)="resetAllCard()"
+      class="h-[80] w-[80]"
+      icon="close"
+      backgroundColor="yellow"
+    >
+    </Button>
+    <Button
+      (tap)="like()"
+      class="h-[80] w-[80]"
+      icon="favorite"
+      backgroundColor="green"
+    >
+    </Button>
+  </FlexboxLayout>
+</GridLayout>
