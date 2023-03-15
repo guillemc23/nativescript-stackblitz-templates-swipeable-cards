@@ -1,12 +1,14 @@
 <GestureRootView>
   <Image
-    *ngFor="let card of cards; let i = index"
+    *ngFor="let card of cards$ | async; let i = index"
     stretch="aspectFill"
     height="500"
     width="90%"
     class="rounded-lg mt-20"
     src="{{ card.img }}"
     (tap)="cardTapped(card, i)"
+    (loaded)="loadedCard($event, i)"
   >
+    <!--    translateY="getTranslateY(i)" -->
   </Image>
 </GestureRootView>

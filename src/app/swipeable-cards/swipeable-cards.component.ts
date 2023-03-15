@@ -25,6 +25,10 @@ export class SwipeableCardsComponent implements OnInit {
   cards$ = new BehaviorSubject<ItemCard[]>(dataCard.reverse());
   currentView$ = new BehaviorSubject<number>(this.cards$.value.length - 1);
 
+  constructor() {}
+
+  ngOnInit(): void {}
+
   manager = NSManager.getInstance();
 
   private getGestureHandler = () => {
@@ -91,7 +95,7 @@ export class SwipeableCardsComponent implements OnInit {
         },
         duration: 250,
       });
-      this.currentView$.value = this.currentView$.value - 1;
+      this.currentView$.next(this.currentView$.value - 1);
       if (this.currentView$.value >= 0) {
         this.getGestureHandler().attachToView(
           this.cards$.value[this.currentView$.value].view
@@ -152,16 +156,19 @@ export class SwipeableCardsComponent implements OnInit {
       }
     }
   }
-  constructor() {}
 
-  ngOnInit(): void {}
-
-  loadedCard(event, index) {
-    console.log(event);
-    console.log(index);
+  loadedCard(args: { object: View }, index: number) {
+    if (!this.cards$.value[index].view) {
+      this.cards$.value[index].view = args.object;
+      args.object.scaleY = this.getScale(index);
+      args.object.scaleX = this.getScale(index);
+      if (this.isFirstCard(index)) {
+        this.getGestureHandler().attachToView(args.object);
+      }
+    }
   }
 
-  cardTapped(card, index): void {
+  cardTapped(card: ItemCard, index: number): void {
     console.log(card);
     console.log(index);
   }
